@@ -50,6 +50,7 @@ createBucket() {
   POLICY=$2
   PURGE=$3
   VERSIONING=$4
+  ILM=$5
 
   # Purge the bucket, if set & exists
   # Since PURGE is user input, check explicitly for `true`
@@ -90,6 +91,10 @@ createBucket() {
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
   ${MC} policy set $POLICY myminio/$BUCKET
+
+  # Set ILM (Information Lifecycle Management) on the bucket
+  echo "Setting ILM of bucket '$BUCKET' to '$ILM'."
+  ${MC} ilm import myminio/$BUCKET $ILM
 }
 
 # Try connecting to Minio instance
@@ -102,10 +107,10 @@ connectToMinio $scheme
 
 {{- if or .Values.defaultBucket.enabled }}
 # Create the bucket
-createBucket {{ .Values.defaultBucket.name }} {{ .Values.defaultBucket.policy }} {{ .Values.defaultBucket.purge }} {{ .Values.defaultBucket.versioning }}
+createBucket {{ .Values.defaultBucket.name }} {{ .Values.defaultBucket.policy }} {{ .Values.defaultBucket.purge }} {{ .Values.defaultBucket.versioning }} {{ .Values.defaultBucket.ilm }}
 {{ else if .Values.buckets }}
 # Create the buckets
 {{- range .Values.buckets }}
-createBucket {{ .name }} {{ .policy }} {{ .purge }} {{ .versioning }}
+createBucket {{ .name }} {{ .policy }} {{ .purge }} {{ .versioning }} {{ .ilm }}
 {{- end }}
 {{- end }}

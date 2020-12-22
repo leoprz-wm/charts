@@ -229,6 +229,8 @@ defaultBucket:
   purge: false
   ## set versioning for bucket true|false
   # versioning: false
+  ## Set Information Lifecycle Management as JSON
+  # ilm: {{ .Files.Get "ilm.json" | toPrettyJson }}
 
 ## Create multiple buckets after minio install
 ## Enabling `defaultBucket` will take priority over this list
@@ -237,6 +239,7 @@ buckets: []
   # - name: bucket1
   #   policy: none
   #   purge: false
+  #   ilm: {{ .Files.Get "bucket1_ilm.json" | toPrettyJson }}
   # - name: bucket2
   #   policy: none
   #   purge: false
